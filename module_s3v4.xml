@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_s3v4" default="compile.module.s3v4">
+  <dirname property="module.s3v4.basedir" file="${ant.file.module_s3v4}"/>
+  
+  <property name="module.jdk.home.s3v4" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.s3v4" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.s3v4" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.s3v4" value="-encoding windows-1252 -source 8 ${compiler.args}"/>
+  
+  <property name="s3v4.output.dir" value="${module.s3v4.basedir}/out/production/s3v4"/>
+  <property name="s3v4.testoutput.dir" value="${module.s3v4.basedir}/out/test/s3v4"/>
+  
+  <path id="s3v4.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="s3v4.module.production.classpath">
+    <path refid="${module.jdk.classpath.s3v4}"/>
+  </path>
+  
+  <path id="s3v4.runtime.production.module.classpath">
+    <pathelement location="${s3v4.output.dir}"/>
+  </path>
+  
+  <path id="s3v4.module.classpath">
+    <path refid="${module.jdk.classpath.s3v4}"/>
+    <pathelement location="${s3v4.output.dir}"/>
+  </path>
+  
+  <path id="s3v4.runtime.module.classpath">
+    <pathelement location="${s3v4.testoutput.dir}"/>
+    <pathelement location="${s3v4.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.s3v4">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.s3v4">
+    <patternset refid="excluded.from.module.s3v4"/>
+  </patternset>
+  
+  <path id="s3v4.module.sourcepath">
+    <dirset dir="${module.s3v4.basedir}">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.s3v4" depends="compile.module.s3v4.production,compile.module.s3v4.tests" description="Compile module s3v4"/>
+  
+  <target name="compile.module.s3v4.production" depends="register.custom.compilers" description="Compile module s3v4; production classes">
+    <mkdir dir="${s3v4.output.dir}"/>
+    <javac2 destdir="${s3v4.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.s3v4}/javac">
+      <compilerarg line="${compiler.args.s3v4}"/>
+      <bootclasspath refid="s3v4.module.bootclasspath"/>
+      <classpath refid="s3v4.module.production.classpath"/>
+      <src refid="s3v4.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.s3v4"/>
+    </javac2>
+    
+    <copy todir="${s3v4.output.dir}">
+      <fileset dir="${module.s3v4.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.s3v4.basedir}/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.s3v4.tests" depends="register.custom.compilers,compile.module.s3v4.production" description="compile module s3v4; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.s3v4" description="cleanup module">
+    <delete dir="${s3v4.output.dir}"/>
+    <delete dir="${s3v4.testoutput.dir}"/>
+  </target>
+</project>
